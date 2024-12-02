@@ -17,7 +17,6 @@ builder.Services.AddIdentityApiEndpoints<User>()
 builder.Services.AddDbContext<FintechDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FintechDB")));
 
-
 var app = builder.Build();
 
 //var scope = app.Services.CreateScope();
