@@ -1,18 +1,45 @@
+using Fintech.Domain.Entities;
 using Fintech.Infrastructure.Persistance;
-using Fintech.Infrastructure.Seeders;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
-namespace Fintech.Infrastructure.Extensions;
+using Microsoft.Extensions.Configuration;
 
 public static class ServiceCollectionsExtensions
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("FintechDB");
-        services.AddDbContext<FintechDbContext>(options => options.UseSqlServer(connectionString));
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new InvalidOperationException("Connection string 'FintechDB' is not configured.");
+        }
+
+        bool environment = Convert.ToBoolean(configuration["Application:isLive"]);
         
-        services.AddScoped<IFintechSeeders, FintechSeeders>();
+        services.AddDbContext<FintechDbContext>(options =>
+        {
+            options.UseSqlServer(connectionString);
+
+            if (!environment)
+            {
+                options.EnableSensitiveDataLogging(); // Enable sensitive data logging in non-live environments
+            }
+        });
+        
+        // Configure Identity
+        /*services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+            })
+            .AddEntityFrameworkStores<FintechDbContext>()
+            .AddDefaultTokenProviders();*/
+
+        // Uncomment and configure these services if needed
+        // services.AddScoped<IFintechSeeders, FintechSeeders>();
     }
 }

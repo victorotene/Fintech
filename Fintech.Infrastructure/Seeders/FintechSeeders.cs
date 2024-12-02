@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fintech.Infrastructure.Seeders;
 
-internal class FintechSeeders(FintechDbContext context) : IFintechSeeders
+/*internal class FintechSeeders(FintechDbContext context) : IFintechSeeders
 {
     public async Task Seed()
     {
@@ -22,4 +22,4 @@ internal class FintechSeeders(FintechDbContext context) : IFintechSeeders
     {
         yield return "John";
     }
-}
+}*/
